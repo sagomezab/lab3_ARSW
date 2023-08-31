@@ -3,14 +3,26 @@
 ### Arquitecturas de Software – ARSW
 
 
-#### Ejercicio – programación concurrente, condiciones de carrera y sincronización de hilos. EJERCICIO INDIVIDUAL O EN PAREJAS.
+### Ejercicio – programación concurrente, condiciones de carrera y sincronización de hilos. EJERCICIO INDIVIDUAL O EN PAREJAS.
+
+### **Desarrollado por: Daniel Santiago Gómez Zabala**
 
 ##### Parte I – Antes de terminar la clase.
 
 Control de hilos con wait/notify. Productor/consumidor.
 
 1. Revise el funcionamiento del programa y ejecútelo. Mientras esto ocurren, ejecute jVisualVM y revise el consumo de CPU del proceso correspondiente. A qué se debe este consumo?, cual es la clase responsable?
+
+* ![](img/CPU_parte1_1.png)
+
+* __Respuesta:__ El consumo de la CPU se debe a que no se detiene el programa y no hay ningun tipo de condicional que permita de tenerlo, es decir, no hay control sobre si la cola esta vacía o no. La culpa recae en _Producer_ y _Consumer_ ya que no hay un limite al agregar valor y tampoco al sacarlos "No se controla si esa vacia la cola".
+
 2. Haga los ajustes necesarios para que la solución use más eficientemente la CPU, teniendo en cuenta que -por ahora- la producción es lenta y el consumo es rápido. Verifique con JVisualVM que el consumo de CPU se reduzca.
+
+* ![](img/CPU_parte1_2.png)
+
+* __Respuesta:__ Dormimos al consumidor el mismo tiempo que esta dormido el productor con el fin de que las peticiones para añadir a la cola no sean tan aceleradas a comparación de lo producido por el productor.
+
 3. Haga que ahora el productor produzca muy rápido, y el consumidor consuma lento. Teniendo en cuenta que el productor conoce un límite de Stock (cuantos elementos debería tener, a lo sumo en la cola), haga que dicho límite se respete. Revise el API de la colección usada como cola para ver cómo garantizar que dicho límite no se supere. Verifique que, al poner un límite pequeño para el 'stock', no haya consumo alto de CPU ni errores.
 
 ##### Parte II. – Avance para el jueves, antes de clase.
