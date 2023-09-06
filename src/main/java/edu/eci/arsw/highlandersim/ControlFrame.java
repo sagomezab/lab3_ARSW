@@ -91,6 +91,9 @@ public class ControlFrame extends JFrame {
                 /*
 				 * COMPLETAR
                  */
+                for (Immortal immortal : immortals){
+                    immortal.pause();
+                }
                 int sum = 0;
                 for (Immortal im : immortals) {
                     sum += im.getHealth();
@@ -111,6 +114,9 @@ public class ControlFrame extends JFrame {
                 /**
                  * IMPLEMENTAR
                  */
+                for (Immortal inmortal: immortals){
+                    inmortal.resumes();
+                }
 
             }
         });
@@ -127,6 +133,19 @@ public class ControlFrame extends JFrame {
 
         JButton btnStop = new JButton("STOP");
         btnStop.setForeground(Color.RED);
+        btnStop.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int response = JOptionPane.showConfirmDialog(null, "¿Está seguro de detener la aplicación?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        
+                if (response == JOptionPane.YES_OPTION) {
+                    for (Immortal immortal : immortals) {
+                        immortal.kill();
+                    }
+                    JOptionPane.showMessageDialog(null, "¡Buena Batalla!");
+                    System.exit(0);
+                }
+            }
+        });
         toolBar.add(btnStop);
 
         scrollPane = new JScrollPane();

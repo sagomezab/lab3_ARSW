@@ -21,9 +21,11 @@ Control de hilos con wait/notify. Productor/consumidor.
 
 * ![](img/CPU_parte1_2.png)
 
-* __Respuesta:__ Dormimos al consumidor el mismo tiempo que esta dormido el productor con el fin de que las peticiones para añadir a la cola no sean tan aceleradas a comparación de lo producido por el productor.
+* __Respuesta:__ Dormimos al consumidor el mismo tiempo que esta dormido el productor con el fin de que las peticiones para añadir a la cola no sean tan aceleradas a comparación de lo producido por el productor. Además agregamos un __wait__ and __notifyall__ esto con el fin de que respete la condicion de que no haya nadie en la cola y en si es el caso se duerma hasta que el producto haya vuelto a producir.
 
 3. Haga que ahora el productor produzca muy rápido, y el consumidor consuma lento. Teniendo en cuenta que el productor conoce un límite de Stock (cuantos elementos debería tener, a lo sumo en la cola), haga que dicho límite se respete. Revise el API de la colección usada como cola para ver cómo garantizar que dicho límite no se supere. Verifique que, al poner un límite pequeño para el 'stock', no haya consumo alto de CPU ni errores.
+
+* __Respuesta:__ Se establecio para que el productor respete el limite del stock y aceleramos su produccion durmiendolo la mitad del tiempo que estaba dispuesto.
 
 ##### Parte II. – Avance para el jueves, antes de clase.
 
@@ -40,11 +42,21 @@ Sincronización y Dead-Locks.
 
 2. Revise el código e identifique cómo se implemento la funcionalidad antes indicada. Dada la intención del juego, un invariante debería ser que la sumatoria de los puntos de vida de todos los jugadores siempre sea el mismo(claro está, en un instante de tiempo en el que no esté en proceso una operación de incremento/reducción de tiempo). Para este caso, para N jugadores, cual debería ser este valor?.
 
+* __Respuesta:__ El valor de la invariante deberia ser N * 100, 100 corresponde al valor incial de vida que se le da a cada inmortal, en el caso incial tenemos que hay 3 inmortales por lo que el valor de invariante seria 300, esta invariante se da ya que cuando se quita vida se le esta sumando al de alguien más por lo que siempre se deberia tener el mismo valor al sumar la vida de los N inmortales.
+
 3. Ejecute la aplicación y verifique cómo funcionan las opción ‘pause and check’. Se cumple el invariante?.
+
+* ![](img/ejecute%20'pause%20and%20check'%20y%20revisar%20invariante.png)
+
+* __Respuesta:__ No se esta cumpliendo la invariante, para 3 inmortales el valor deberia ser 300.
 
 4. Una primera hipótesis para que se presente la condición de carrera para dicha función (pause and check), es que el programa consulta la lista cuyos valores va a imprimir, a la vez que otros hilos modifican sus valores. Para corregir esto, haga lo que sea necesario para que efectivamente, antes de imprimir los resultados actuales, se pausen todos los demás hilos. Adicionalmente, implemente la opción ‘resume’.
 
+* __Respuesta:__ Para que la vida se consultara secuencialmete se decidio que fue un AtomicInteger, además se implemento 'resume' se encuentra dentro del codigo.
+
 5. Verifique nuevamente el funcionamiento (haga clic muchas veces en el botón). Se cumple o no el invariante?.
+
+* __Respuesta:__ Sigue sin cumplirse la invariante.
 
 6. Identifique posibles regiones críticas en lo que respecta a la pelea de los inmortales. Implemente una estrategia de bloqueo que evite las condiciones de carrera. Recuerde que si usted requiere usar dos o más ‘locks’ simultáneamente, puede usar bloques sincronizados anidados:
 
@@ -55,12 +67,27 @@ Sincronización y Dead-Locks.
 		}
 	}
 	```
+	* __Respuesta:__ La región critica esta dentro del método fight, ya que ahí es donde se esta llevando acabo la razón de ser del juego.
 
 7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
+
+* __Respuesta:__ Usando jps y jstack encontramos los siguiente: <br>
+![](img/deadlocks%20cmd.png)
+Y asi se ve dentro del programa: <br>
+![](img/deadlocks.png)
+Lo que nos idica que hay un deadlock ya que diversos hilos estan intentando entrar al mismo recurso y estan quedando en un estado de espera. 
 
 8. Plantee una estrategia para corregir el problema antes identificado (puede revisar de nuevo las páginas 206 y 207 de _Java Concurrency in Practice_).
 
 9. Una vez corregido el problema, rectifique que el programa siga funcionando de manera consistente cuando se ejecutan 100, 1000 o 10000 inmortales. Si en estos casos grandes se empieza a incumplir de nuevo el invariante, debe analizar lo realizado en el paso 4.
+
+* __Respuesta:__ acá se muestran los ejemplos del cumplimiento de la invariante<br>
+Ejemplo 100<br>
+![](img/invariate100.png)
+Ejemplo 1000<br>
+![](img/invariate1000.png)
+Ejemplo 10000<br>
+![](img/invariate10000.png)
 
 10. Un elemento molesto para la simulación es que en cierto punto de la misma hay pocos 'inmortales' vivos realizando peleas fallidas con 'inmortales' ya muertos. Es necesario ir suprimiendo los inmortales muertos de la simulación a medida que van muriendo. Para esto:
 	* Analizando el esquema de funcionamiento de la simulación, esto podría crear una condición de carrera? Implemente la funcionalidad, ejecute la simulación y observe qué problema se presenta cuando hay muchos 'inmortales' en la misma. Escriba sus conclusiones al respecto en el archivo RESPUESTAS.txt.

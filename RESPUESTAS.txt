@@ -1,0 +1,3 @@
+RESPUESTAS:
+
+10. Suprimir inmortales muertos de la simulación puede crear una condición de carrera en el escenario en el que varios hilos intentan acceder a la lista de inmortales y eliminar elementos al mismo tiempo. Esto puede llevar a resultados inesperados o incluso a errores en la simulación, ya que dos hilos pueden intentar eliminar al mismo inmortal, lo que podría generar una excepción o causar otros problemas.
